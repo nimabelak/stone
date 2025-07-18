@@ -13,7 +13,7 @@ ctk.set_default_color_theme("blue")
 
 drop_image = Image.open("drop_image.png")
 
-# Webcam capture window
+
 class CameraCapture(ctk.CTkToplevel):
     def __init__(self, master, on_submit):
         super().__init__(master)
@@ -91,13 +91,13 @@ class CameraCapture(ctk.CTkToplevel):
         self.destroy()
 
 
-# Image Browse / Drag and Drop Window + Camera Option
 class ImageSelectWindow(ctk.CTkToplevel):
-    def __init__(self, master, *args, **kwargs):
+    def __init__(self, master, on_submit_callback, *args, **kwargs):
         super().__init__(master, *args, **kwargs)
         self.geometry("1000x600")
         self.title("Select an Image")
         self.dialog_open = False
+        self.on_submit_callback = on_submit_callback
 
         self.canvas = ctk.CTkCanvas(self, width=450, height=200, highlightthickness=4, highlightbackground="gray")
         self.canvas.pack(pady=40)
@@ -130,7 +130,19 @@ class ImageSelectWindow(ctk.CTkToplevel):
         self.selected_image = ctk.CTkLabel(self, text="")
         self.selected_image.pack(pady=1)
 
+        self.image_control_frame = ctk.CTkFrame(self, fg_color="transparent")
+        self.image_control_frame.pack(pady=5)
+        self.image_control_frame.pack_forget()  # hidden initially
+
+        self.delete_btn = ctk.CTkButton(self.image_control_frame, text="Delete", fg_color="#D83C3C", command=self.clear_image)
+        self.submit_btn = ctk.CTkButton(self.image_control_frame, text="Submit", command=self.submit_image)
+
+        self.delete_btn.pack(side="left", padx=10)
+        self.submit_btn.pack(side="left", padx=10)
+
         self.set_window_on_top()
+
+        self.current_image_path = None
 
     def browse_file(self):
         if not self.dialog_open:
@@ -162,9 +174,23 @@ class ImageSelectWindow(ctk.CTkToplevel):
 
             self.selected_image.configure(image=ctk_img, text="")
             self.selected_image.image = ctk_img
+            self.current_image_path = path
+            self.image_control_frame.pack(pady=5)
         else:
             self.selected_image.configure(text="Invalid image format", image=None)
             self.selected_image.image = None
+            self.image_control_frame.pack_forget()
+
+    def clear_image(self):
+        self.selected_image.configure(image=None, text="")
+        self.selected_image.image = None
+        self.current_image_path = None
+        self.image_control_frame.pack_forget()
+
+    def submit_image(self):
+        if self.current_image_path:
+            self.on_submit_callback(self.current_image_path)
+            self.destroy()
 
     def set_window_on_top(self):
         self.lift()
@@ -172,26 +198,52 @@ class ImageSelectWindow(ctk.CTkToplevel):
         self.after(100, lambda: self.attributes("-topmost", False))
 
 
-# Main Application Window (from test)
 class App(TkinterDnD.Tk):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.geometry("800x600")
         self.title("Stone App")
         self.image_select_window = None
+        self.current_image_path = None
 
         self.button_1 = ctk.CTkButton(self, text="Open Select Image Window", command=self.open_toplevel)
-        self.button_1.pack(side="top", padx=20, pady=20)
+        self.button_1.pack(pady=20)
+
+        self.main_image = ctk.CTkLabel(self, text="")
+        self.main_image.pack(pady=10)
+
+        self.main_buttons = ctk.CTkFrame(self, fg_color="transparent")
+        self.start_btn = ctk.CTkButton(self.main_buttons, text="Start Processing", command=self.start_processing)
+        self.delete_btn = ctk.CTkButton(self.main_buttons, text="Delete", fg_color="#D83C3C", command=self.clear_main_image)
 
     def open_toplevel(self):
         if self.image_select_window is None or not self.image_select_window.winfo_exists():
-            self.image_select_window = ImageSelectWindow(self)
+            self.image_select_window = ImageSelectWindow(self, self.display_main_image)
             self.image_select_window.focus()
         else:
             self.image_select_window.focus()
 
+    def display_main_image(self, path):
+        img = Image.open(path)
+        img.thumbnail((500, 500))
+        ctk_img = CTkImage(light_image=img, dark_image=img, size=img.size)
+        self.main_image.configure(image=ctk_img, text="")
+        self.main_image.image = ctk_img
+        self.current_image_path = path
+        self.main_buttons.pack(pady=10)
+        self.start_btn.pack(side="left", padx=10)
+        self.delete_btn.pack(side="left", padx=10)
 
-# Run App
+    def start_processing(self):
+        print("Processing started... (this is a placeholder)")
+
+    def clear_main_image(self):
+        self.main_image.configure(image=None, text="")
+        self.main_image.image = None
+        self.current_image_path = None
+        self.main_buttons.pack_forget()
+
+
 if __name__ == "__main__":
     app = App()
     app.mainloop()
