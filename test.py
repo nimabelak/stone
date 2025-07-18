@@ -99,7 +99,7 @@ class App(TkinterDnD.Tk):
      def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.geometry("800x600")
-        self.button_1 = ctk.CTkButton(self, text="open toplevel", command=self.open_toplevel)
+        self.button_1 = ctk.CTkButton(self, text="open select image window", command=self.open_toplevel)
         self.button_1.pack(side="top", padx=20, pady=20)
         self.title("Stone App")
         self.image_select_window = None
