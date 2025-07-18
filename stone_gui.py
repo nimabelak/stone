@@ -13,6 +13,13 @@ ctk.set_default_color_theme("blue")
 
 drop_image = Image.open("drop_image.png")
 
+import ctypes
+try:
+    # Windows 10 build 19045 compatibility
+    ctypes.windll.user32.SetProcessDPIAware()
+except:
+    pass
+
 
 # Webcam Capture Window
 class CameraCapture(ctk.CTkToplevel):
