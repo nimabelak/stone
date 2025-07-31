@@ -1,0 +1,36 @@
+Stone
+Step 2
+July 19, 2025
+1
+Specification
+At this stage, the user can define the boundary for the stone and isolate
+it from the background. In Python, write a code that enables the user to set
+the boundary of the stone and separate it from the background.
+From the previous step, we have the “Start Processing” button that
+currently lacks functionality. When we click on the “Start Processing” button
+in this step, the process of extracting the stone from the image should
+commence:
+• When user click on start processing button, the application must
+establish a demarcation for the stone within the background. The image
+and the delineation of the stone must be presented to the user through the
+graphical user interface (GUI), referred to as the “segmentation page.”
+• To establish boundaries for stone, multiple elements may be
+necessary. These elements should be customizable on the “segmentation
+page,” allowing users to edit them if the app is unable to segment the
+stone mask effectively. It is crucial to ensure that when users modify these
+elements, the boundaries are updated in real time. A range type is
+preferable for each element to accommodate this dynamic nature.
+• A button should be placed on the “segmentation page” with the label
+“Set as Default.” Upon clicking this button, the default value of each
+element should be set to the current value of that element. Subsequently,
+when the user runs the program, the stone boundary can be extracted
+using these values.
+• Two buttons must be located at the bottom of the “segmentation
+page”: “Delete Image” and “Start.” When the user clicks on the “Delete
+Image” button, the application should return to step 1 and allow the user to
+select another image. The “Start” button does not require any action for
+this step.
+2
+When to submit
+Submit the code by 1404/05/11(August 2, 2025)
+3
