@@ -1,7 +1,7 @@
 {
-  "blur_kernel": 15.0,
-  "threshold_value": 167.0,
-  "erosion_iterations": 3.0,
-  "dilation_iterations": 4.0,
-  "contour_area_threshold": 10000.0
+    "blur_kernel": 31.0,
+    "threshold_value": 175.0,
+    "erosion_iterations": 8.0,
+    "dilation_iterations": 1.0,
+    "contour_area_threshold": 30000.0
 }
